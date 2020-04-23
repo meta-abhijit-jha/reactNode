@@ -10,19 +10,13 @@ class App extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.state = {
       counter: 0,
-      boxes: Array(9).fill(null),
-      currentMark: ""
+      boxes: Array(9).fill(null)
     };
   }
 
   handleClick(currentPosition, mark) {
-    this.setState(
-      {
-        currentMark: mark
-      }
-    );
-    const newBoxes = this.state.boxes.slice();
-    if (this.calculateWinner(newBoxes) || newBoxes[currentPosition]) {
+    const newBoxes = this.state.boxes;
+    if (this.calculateWinner(newBoxes)) {
       return;
     }
     newBoxes[currentPosition] = mark;
@@ -47,7 +41,7 @@ class App extends React.Component {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (boxes[a] && boxes[a] === boxes[b] && boxes[a] === boxes[c]) {
+      if (boxes[a] === boxes[b] && boxes[a] === boxes[c]) {
         return boxes[a];
       }
     }
@@ -80,7 +74,6 @@ class App extends React.Component {
           <InputBox onClick={this.handleClick} value={counter} position="8" winner={winner}></InputBox>
         </div>
         <div>
-          <h2>Hello</h2>
           <h2>{status}</h2>
         </div>
       </div>
