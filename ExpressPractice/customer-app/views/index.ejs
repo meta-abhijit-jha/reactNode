@@ -1,0 +1,41 @@
+<%- include('partials/header'); %>
+    <h1>Add Customer</h1>
+
+    <% if(errors) { %>
+        <ul>
+            <li><%= errors %></li>
+            <% errors.errors.forEach(function(error) { %>
+                <li><%= error.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form method="POST" action="/users/add">
+        <div>
+            <p>First Name</p>
+            <input type="text" name="first_name"/>
+        </div>
+        <div>
+            <p>Last Name</p>
+            <input type="text" name="last_name"/>
+        </div>
+        <div>
+            <p>Email Id</p>
+            <input type="text" name="email"/>
+        </div>
+        <div>
+            <p></p>
+            <input type="submit" value="Submit"/>
+        </div>
+    </form>
+    <h2><%= title %></h2>
+    <ul>
+        <% users.forEach(function(user) { %>
+            <li><%= user.first_name %></li>
+            <div><%= user.last_name %></div>
+            <li><%= user.email %></li>
+            <p></p>
+        <% }) %>
+    </ul>
+    
+<%- include('partials/footer'); %>
