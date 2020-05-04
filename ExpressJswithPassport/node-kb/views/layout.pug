@@ -1,0 +1,39 @@
+doctype html
+html
+    head
+        title Knowledge Based App
+        link(rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css")
+    body
+        nav.navbar.navbar-inverse
+            .container-fluid
+                .navbar-header
+                    a.navbar-brand(href='/') Knowledge Based
+                ul.nav.navbar-nav
+                    li
+                        a(href='/') Home
+                    if user
+                        li
+                            a(href='/articles/add') Add Article
+                ul.nav.navbar-nav.navbar-right
+                    if user
+                        li 
+                            a(href="/users/logout") Logout
+                    else
+                        li
+                            a(href='/users/register') Register
+                        li
+                            a(href='/users/login') Login
+
+        .container
+            != messages('message', locals)
+            if errors
+                each error, i in errors.errors
+                    div(class="alert alert-danger") #{error.msg}
+            block content
+            br
+            br
+            footer
+                p Copyright &copy; 2017
+        script(src="/bower_components/jquery/dist/jquery.js")
+        script(src="/bower_components/bootstrap/dist/js/bootstrap.js")
+        
