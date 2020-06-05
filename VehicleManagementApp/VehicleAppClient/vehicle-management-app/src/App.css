@@ -1,0 +1,77 @@
+.App {
+  margin-top: 90px;
+  text-align: center;
+  width: 80%;
+  margin-right: auto;
+  margin-left: auto;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+textarea {
+  resize: none;
+}
+
+.detailList {
+  display: flex;
+  justify-content: center;
+}
+
+th {
+  text-align: center;
+}
+
+.navigationPanel span {
+  color: whitesmoke;
+}
+
+.addButton {
+  margin-right: 100%;
+}
+
+.searchDiv {
+  margin-top: 30px;
+}
+
+.filters {
+  background-color: whitesmoke;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modelFilters {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.modelFilters .childFilter {
+  width: 50%;
+  margin-right: 5px;
+  height: auto;
+  border: 2px solid lightgray;
+  align-items: center;
+}
+
+.dataFilter {
+  margin-bottom: 50px;
+}
+
+.footer {
+  margin-top: 50px;
+  border-top: 1px solid gray;
+  background-color: whitesmoke;
+}
+
+.footer p {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  text-align: center;
+  padding-top: 20px;
+  color: black;
+}
