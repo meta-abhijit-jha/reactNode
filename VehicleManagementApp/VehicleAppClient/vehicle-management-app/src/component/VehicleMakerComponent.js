@@ -2,6 +2,7 @@ import React from 'react'
 import { Table } from 'react-bootstrap'
 import SortingOrder from '../util/SortingOrder'
 import AddMaker from './Modals/AddMaker'
+import Delete from './Modals/Delete'
 
 class VehicleMakerComponent extends React.Component {
 
@@ -29,6 +30,7 @@ class VehicleMakerComponent extends React.Component {
                         country_of_origin={data.country_of_origin}>
                     </AddMaker>
                 </td>
+                <td><Delete id={data.id} screen="vehicleMaker"></Delete></td>
             </tr>
         )
 
@@ -41,6 +43,7 @@ class VehicleMakerComponent extends React.Component {
                         <tr>
                             <th>Manufacturer<SortingOrder sortBy="manufacturer" sortFunc={this.sortFunction} /></th>
                             <th>Country of Origin<SortingOrder sortBy="country_of_origin" sortFunc={this.sortFunction} /></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>

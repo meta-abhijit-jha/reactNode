@@ -43,5 +43,14 @@ module.exports = app => {
     //To add in Vehicle Data
     router.put('/VehicleData', vehicleDataController.updateVehicleData)
 
+    //To delete in Vehicle Maker
+    router.delete('/vehicleMaker/:id', vehicleMakerController.deleteVehicleMaker)
+
+    //To delete in Vehicle Model
+    router.delete('/VehicleModel/:id', vehicleModelController.deleteVehicleModel)
+
+    //To delete in Vehicle Data
+    router.delete('/VehicleData/:id', vehicleDataController.deleteVehicleData)
+
     app.use('/', router)
 }

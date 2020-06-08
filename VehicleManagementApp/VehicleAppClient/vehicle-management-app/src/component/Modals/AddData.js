@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Button, Modal, FormControl, DropdownButton, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Validator from '../Validator'
+import ValidateIt from './ValidatorMain'
 
 class AddData extends React.Component {
     constructor(props) {
@@ -19,7 +19,12 @@ class AddData extends React.Component {
             last_repaired_on,
             model,
             makerTitle: makerTitle,
-            modelTitle: modelTitle
+            modelTitle: modelTitle,
+            warningVehicleNumber: '',
+            warningOwner: '',
+            warningPurchased: '',
+            warningRepaired: '',
+            warningMain: ''
         }
 
         this.renderModal = this.renderModal.bind(this)
@@ -32,6 +37,7 @@ class AddData extends React.Component {
         this.handleModel = this.handleModel.bind(this)
         this.handleAdd = this.handleAdd.bind(this)
         this.handleEdit = this.handleEdit.bind(this)
+        this.submitChecker = this.submitChecker.bind(this)
     }
 
     renderModal() {
@@ -41,7 +47,7 @@ class AddData extends React.Component {
     }
 
     closeModal() {
-        if (this.props.reqType == 'post') {
+        if (this.props.reqType == 'add') {
             this.setState({
                 vehiclenumber: '',
                 owner_name: '',
@@ -50,7 +56,12 @@ class AddData extends React.Component {
                 model: null,
                 showModal: false,
                 makerTitle: 'Select Maker',
-                modelTitle: 'Select Model'
+                modelTitle: 'Select Model',
+                warningVehicleNumber: '',
+                warningOwner: '',
+                warningPurchased: '',
+                warningRepaired: '',
+                warningMain: ''
             })
         } else {
             this.setState({
@@ -60,27 +71,56 @@ class AddData extends React.Component {
         }
     }
 
-    handleVIN(e) {
+    submitChecker() {
+        const { vehiclenumber, owner_name, purchased_on, last_repaired_on } = this.state
+
+        if ((this.props.checkValid('VIN', 'addData', vehiclenumber) == '')
+            || (this.props.checkValid('owner', 'addData', owner_name) == '')
+            || (this.props.checkValid('purchased', 'addData', purchased_on) == '')
+            || (this.props.checkValid('repaired', 'addData', last_repaired_on) == '')
+        ) {
+            return true
+        }
+
         this.setState({
-            vehiclenumber: e.target.value
+            warningMain: 'Please fill all the required information'
+        })
+        return false
+    }
+
+    handleVIN(e) {
+        const warning = this.props.checkValid('VIN', 'addData', e.target.value)
+
+        this.setState({
+            vehiclenumber: e.target.value,
+            warningVehicleNumber: warning
         })
     }
 
     handleOwner(e) {
+        const warning = this.props.checkValid('owner', 'addData', e.target.value)
+
         this.setState({
-            owner_name: e.target.value
+            owner_name: e.target.value,
+            warningOwner: warning
         })
     }
 
     handlePurchase(e) {
+        const warning = this.props.checkValid('purchased', 'addData', e.target.value)
+
         this.setState({
-            purchased_on: e.target.value
+            purchased_on: e.target.value,
+            warningPurchased: warning
         })
     }
 
     handleRepair(e) {
+        const warning = this.props.checkValid('repaired', 'addData', e.target.value)
+
         this.setState({
-            last_repaired_on: e.target.value
+            last_repaired_on: e.target.value,
+            warningRepaired: warning
         })
     }
 
@@ -93,6 +133,10 @@ class AddData extends React.Component {
 
     handleAdd() {
         const { vehiclenumber, owner_name, purchased_on, last_repaired_on, model } = this.state
+
+        if (!this.submitChecker()) {
+            return
+        }
 
         axios.post('/vehicleData', {
             vehiclenumber,
@@ -114,6 +158,10 @@ class AddData extends React.Component {
 
     handleEdit() {
         const { id, vehiclenumber, owner_name, purchased_on, last_repaired_on, model } = this.state
+
+        if (!this.submitChecker()) {
+            return
+        }
 
         axios.put('/vehicleData', {
             id,
@@ -174,7 +222,7 @@ class AddData extends React.Component {
     }
 
     render() {
-        const { makers, models, vehiclenumber, owner_name, purchased_on, last_repaired_on, makerTitle, modelTitle, toastMsg } = this.state
+        const { makers, models, vehiclenumber, owner_name, purchased_on, last_repaired_on, makerTitle, modelTitle, toastMsg, warningMain, warningOwner, warningRepaired, warningVehicleNumber, warningPurchased } = this.state
         const { reqType } = this.props
         let showButton, title, launchButton
 
@@ -205,31 +253,31 @@ class AddData extends React.Component {
                     </Modal.Header>
 
                     <Modal.Body>
+                        <p className="warning">{warningMain}</p>
+
                         <FormControl.Static>VIN:</FormControl.Static>
                         <FormControl type="text" value={vehiclenumber} placeholder="Enter VIN" onChange={this.handleVIN}></FormControl>
-                        <Validator checkFor={vehiclenumber} type="textbox"></Validator>
+                        <small className="warning">{warningVehicleNumber}</small>
 
                         <FormControl.Static>Owner:</FormControl.Static>
                         <FormControl type="text" value={owner_name} placeholder="Enter Owner Name" onChange={this.handleOwner}></FormControl>
-                        <Validator checkFor={owner_name} type="textbox"></Validator>
+                        <small className="warning">{warningOwner}</small>
 
                         <FormControl.Static>Date of purchase:</FormControl.Static>
                         <FormControl type="text" value={purchased_on} placeholder="Enter Date of Purchase" onChange={this.handlePurchase}></FormControl>
-                        <Validator checkFor={purchased_on} type="textbox"></Validator>
+                        <small className="warning">{warningPurchased}</small>
 
                         <FormControl.Static>Date of last repairing:</FormControl.Static>
                         <FormControl type="text" value={last_repaired_on} placeholder="Enter Last Repairing date" onChange={this.handleRepair}></FormControl>
-                        <Validator checkFor={last_repaired_on} type="textbox"></Validator>
+                        <p><small className="warning">{warningRepaired}</small></p>
 
                         <DropdownButton bsStyle="primary" title={makerTitle}>
                             {menuitems}
                         </DropdownButton>
-                        <Validator checkFor={makerTitle=='Select Maker' ? null : makerTitle} ></Validator>
 
                         <DropdownButton bsStyle="primary" title={modelTitle}>
                             {menuitemsModel}
                         </DropdownButton>
-                        <Validator checkFor={modelTitle=='Select Model' ? null : modelTitle} ></Validator>
                     </Modal.Body>
 
                     <Modal.Footer>
@@ -246,4 +294,4 @@ class AddData extends React.Component {
     }
 }
 
-export default AddData;
+export default ValidateIt(AddData)

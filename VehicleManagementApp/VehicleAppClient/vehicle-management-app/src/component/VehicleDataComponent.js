@@ -2,6 +2,7 @@ import React from 'react'
 import { Table } from 'react-bootstrap'
 import SortingOrder from '../util/SortingOrder'
 import AddData from './Modals/AddData'
+import Delete from './Modals/Delete'
 
 class VehicleDataComponent extends React.Component {
 
@@ -39,6 +40,7 @@ class VehicleDataComponent extends React.Component {
                         makerTitle={data.VehicleModel.VehicleManufacturer.manufacturer}>
                     </AddData>
                 </td>
+                <td><Delete id={data.id} screen="vehicleData"></Delete></td>
             </tr>
         )
 
@@ -56,6 +58,7 @@ class VehicleDataComponent extends React.Component {
                             <th>Vehicle Model<SortingOrder sortBy="model" sortFunc={this.sortFunction} /></th>
                             <th>Vehicle Manufacturer<SortingOrder sortBy="manufacturer" sortFunc={this.sortFunction} /></th>
                             <th>Vehicle Type<SortingOrder sortBy="name" sortFunc={this.sortFunction} /></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>

@@ -46,6 +46,11 @@ exports.getVehicleMaker = (req, res) => {
                 "lastId": data[data.length - 1].id
             })
         })
+        .catch(err => {
+            res.status(404).send({
+                message: "Not found"
+            })
+        })
 }
 
 //Create new row in VehicleMaker
@@ -109,6 +114,26 @@ exports.updateVehicleMaker = (req, res) => {
             })
         })
 
+}
+
+//Delete in Vehicle Maker
+exports.deleteVehicleMaker = (req, res) => {
+    const id = req.params.id
+
+    VehicleMaker.destroy({
+        where: { id: id }
+    })
+        .then(data => {
+            res.send({
+                message: "Deleted Successfully"
+            })
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Could not delete because associate data still exist. If you want to delete, then remove associated data from other pages first."
+            })
+        })
 }
 
 function countPages(totalContent, contentPerPage) {

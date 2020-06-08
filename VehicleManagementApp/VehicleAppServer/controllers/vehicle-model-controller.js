@@ -67,6 +67,11 @@ exports.getVehicleModel = (req, res) => {
                 "lastId": data[data.length - 1].id
             })
         )
+        .catch(err => {
+            res.status(404).send({
+                message: "Not found"
+            })
+        })
 }
 
 //Create new row in VehicleModel
@@ -103,7 +108,7 @@ exports.addVehicleModel = (req, res) => {
 
 }
 
-//Create new row in VehicleModel
+//Update row in VehicleModel
 exports.updateVehicleModel = (req, res) => {
     const { id, model, manufacturer, type, petrol_variant, diesel_variant } = req.body
 
@@ -136,6 +141,26 @@ exports.updateVehicleModel = (req, res) => {
             })
         })
 
+}
+
+//Delete in Vehicle Model
+exports.deleteVehicleModel = (req, res) => {
+    const id = req.params.id
+
+    VehicleModel.destroy({
+        where: { id: id }
+    })
+        .then(data => {
+            res.send({
+                message: "Deleted Successfully"
+            })
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Could not delete because associate data still exist. If you want to delete, then remove associated data from other pages first."
+            })
+        })
 }
 
 function countPages(totalContent, contentPerPage) {

@@ -73,6 +73,11 @@ exports.getVehicleData = (req, res) => {
                 "lastPage": countPages(data.length, contentPerPage)
             })
         )
+        .catch(err => {
+            res.status(404).send({
+                message: "Not found"
+            })
+        })
 }
 
 //Create new row in VehicleData
@@ -108,6 +113,7 @@ exports.addVehicleData = (req, res) => {
         })
 }
 
+//Update in Vehicle Data
 exports.updateVehicleData = (req, res) => {
     const { id, vehiclenumber, owner_name, purchased_on, last_repaired_on, model } = req.body
 
@@ -127,7 +133,7 @@ exports.updateVehicleData = (req, res) => {
     }
 
     VehicleData.update(object, {
-        where: {id:id}
+        where: { id: id }
     })
         .then(data => {
             res.status(200).send({
@@ -137,6 +143,26 @@ exports.updateVehicleData = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message: "Unable to Update! Duplicate data found"
+            })
+        })
+}
+
+//Delete in Vehicle Data
+exports.deleteVehicleData = (req, res) => {
+    const id = req.params.id
+
+    VehicleData.destroy({
+        where: { id: id }
+    })
+        .then(data => {
+            res.send({
+                message: "Deleted Successfully"
+            })
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Could not delete"
             })
         })
 }

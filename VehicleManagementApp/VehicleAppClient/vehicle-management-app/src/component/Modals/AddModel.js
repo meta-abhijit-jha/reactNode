@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Button, Modal, FormControl, DropdownButton, MenuItem, Checkbox, FormGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Validator from '../Validator'
+import ValidateIt from './ValidatorMain'
 
 class AddModel extends React.Component {
     constructor(props) {
@@ -19,7 +19,10 @@ class AddModel extends React.Component {
             petrol_variant: petrol,
             diesel_variant: diesel,
             makerTitle,
-            typeTitle
+            typeTitle,
+            warningModel: '',
+            warningMaker: '',
+            warningMain: ''
         }
 
         this.renderModal = this.renderModal.bind(this)
@@ -30,6 +33,7 @@ class AddModel extends React.Component {
         this.handleVariant = this.handleVariant.bind(this)
         this.handleAdd = this.handleAdd.bind(this)
         this.handleEdit = this.handleEdit.bind(this)
+        this.emptyChecker = this.emptyChecker.bind(this)
     }
 
     renderModal() {
@@ -39,14 +43,20 @@ class AddModel extends React.Component {
     }
 
     closeModal() {
-        if (this.props.reqType == 'post') {
+        if (this.props.reqType == 'add') {
             this.setState({
                 model: '',
                 manufacturer: null,
                 type: null,
                 petrol_variant: false,
                 diesel_variant: false,
-                showModal: false
+                showModal: false,
+                makerTitle: 'Select Maker',
+                typeTitle: 'Select Type',
+                warningMaker: '',
+                warningModel: '',
+                warningMain: '',
+                warningVariant: ''
             })
         } else {
             this.setState({
@@ -54,6 +64,19 @@ class AddModel extends React.Component {
                 toastMsg: ''
             })
         }
+    }
+
+    emptyChecker() {
+        const { model, makerTitle, typeTitle, petrol_variant, diesel_variant } = this.state
+        if ((model == '') || (makerTitle == 'Select Maker') || (typeTitle == 'Select Type') || ((!petrol_variant) && (!diesel_variant))) {
+            this.setState({
+                warningMain: 'Please fill all the required information'
+            })
+
+            return false
+        }
+
+        return true
     }
 
     handleMaker(eventKey, event) {
@@ -71,19 +94,32 @@ class AddModel extends React.Component {
     }
 
     handleModel(e) {
+        const warning = this.props.checkValid('model', 'addModel', e.target.value)
+
         this.setState({
-            model: e.target.value
+            model: e.target.value,
+            warningModel: warning
         })
     }
 
     handleVariant(e) {
         this.setState({
             [e.target.id]: e.target.checked
+        }, () => {
+            const { petrol_variant, diesel_variant } = this.state
+            const warning = this.props.checkValid('variant', 'addModel', petrol_variant || diesel_variant)
+            this.setState({
+                warningVariant: warning
+            })
         })
     }
 
     handleAdd() {
         const { model, manufacturer, type, petrol_variant, diesel_variant } = this.state
+
+        if (!this.emptyChecker()) {
+            return
+        }
 
         axios.post('/vehicleModel', {
             model,
@@ -101,10 +137,16 @@ class AddModel extends React.Component {
                     toastMsg: error.response.data.message
                 })
             })
+
+
     }
 
     handleEdit() {
-        const { id, model, manufacturer, type, petrol_variant, diesel_variant} = this.state
+        const { id, model, manufacturer, type, petrol_variant, diesel_variant } = this.state
+
+        if (!this.emptyChecker()) {
+            return
+        }
 
         axios.put('/vehicleModel', {
             id,
@@ -160,7 +202,7 @@ class AddModel extends React.Component {
     }
 
     render() {
-        const { makers, types, makerTitle, typeTitle, model, showModal, toastMsg, petrol_variant, diesel_variant, manufacturer, type } = this.state
+        const { makers, types, makerTitle, typeTitle, model, showModal, toastMsg, petrol_variant, diesel_variant, warningModel, warningVariant, warningMain } = this.state
         const { reqType } = this.props
         let showButton, title, launchButton
 
@@ -194,26 +236,25 @@ class AddModel extends React.Component {
                     </Modal.Header>
 
                     <Modal.Body>
+                        <p className="warning">{warningMain}</p>
                         <DropdownButton bsStyle="primary" title={makerTitle}>
                             {menuitems}
                         </DropdownButton>
-                        <Validator checkFor={manufacturer}></Validator>
 
                         <DropdownButton bsStyle="primary" title={typeTitle}>
                             {menuitemsType}
                         </DropdownButton>
-                        <Validator checkFor={type}></Validator>
 
                         <FormControl.Static>Model Name:</FormControl.Static>
                         <FormControl type="text" value={model} placeholder="Enter Model" onChange={this.handleModel}></FormControl>
-                        <Validator checkFor={model} type="textbox"></Validator>
+                        <small className="warning">{warningModel}</small>
 
                         <FormControl.Static>Select Variant(s):</FormControl.Static>
                         <FormGroup>
                             <Checkbox inline id="petrol_variant" onChange={this.handleVariant} checked={petrol_variant}>Petrol</Checkbox>
                             <Checkbox inline id="diesel_variant" onChange={this.handleVariant} checked={diesel_variant}>Diesel</Checkbox>
-                            <Validator checkFor={petrol_variant || diesel_variant}></Validator>
                         </FormGroup>
+                        <small className="warning">{warningVariant}</small>
 
                     </Modal.Body>
 
@@ -228,4 +269,4 @@ class AddModel extends React.Component {
     }
 }
 
-export default AddModel;
+export default ValidateIt(AddModel)

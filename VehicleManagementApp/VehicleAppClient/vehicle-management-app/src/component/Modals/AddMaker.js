@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Button, Modal, FormControl, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Validator from '../Validator'
+import ValidateIt from './ValidatorMain'
 
 class AddMaker extends React.Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class AddMaker extends React.Component {
             buttonStatus: true,
             warningMaker: '',
             warningCountry: '',
-            validCount: 0
+            warningMain: ''
         }
 
         this.renderModal = this.renderModal.bind(this)
@@ -26,7 +26,7 @@ class AddMaker extends React.Component {
         this.handleMakerName = this.handleMakerName.bind(this)
         this.handleAdd = this.handleAdd.bind(this)
         this.handleEdit = this.handleEdit.bind(this)
-        this.handleValidation = this.handleValidation.bind(this)
+        this.emptyChecker = this.emptyChecker.bind(this)
     }
 
     renderModal() {
@@ -43,6 +43,7 @@ class AddMaker extends React.Component {
                 toastMsg: '',
                 warningCountry: '',
                 warningMaker: '',
+                warningMain: '',
                 showModal: false
             })
         } else {
@@ -50,26 +51,41 @@ class AddMaker extends React.Component {
         }
     }
 
+    emptyChecker() {
+        const { manufacturer, country } = this.state
+        if (!manufacturer || !country  || manufacturer.charCodeAt(0) == 32 || country.charCodeAt(0) == 32) {
+            this.setState({
+                warningMain: 'Please fill all the required information'
+            })
+
+            return false
+        }
+
+        return true
+    }
+
     handleMakerName(e) {
+        const warning = this.props.checkValid('manufacturer', 'addMaker', e.target.value)
+
         this.setState({
+            warningMaker: warning,
             manufacturer: e.target.value
         })
     }
 
     handleCountry(e) {
+        const warning = this.props.checkValid('country', 'addMaker', e.target.value)
+
         this.setState({
+            warningCountry: warning,
             country: e.target.value
         })
     }
 
-   handleAdd() {
+    handleAdd() {
         const { manufacturer, country } = this.state
-        const obj = { manufacturer, country }
-        const validFor = 2
 
-        this.handleValidation(obj)
-
-        if (this.state.validCount != validFor) {
+        if (!this.emptyChecker()) {
             return
         }
 
@@ -89,24 +105,10 @@ class AddMaker extends React.Component {
 
     }
 
-    handleValidation(obj) {
-        const validity = require('../../util/validator')(obj, "addMaker")
-        const { manufacturer, country, validCount } = validity
-        this.setState({
-            warningMaker: manufacturer,
-            warningCountry: country,
-            validCount
-        })
-    }
-
     handleEdit() {
         const { id, manufacturer, country } = this.state
-        const obj = { manufacturer, country }
-        const validFor = 2
 
-        this.handleValidation(obj)
-
-        if (this.state.validCount != validFor) {
+        if (!this.emptyChecker()) {
             return
         }
 
@@ -141,7 +143,7 @@ class AddMaker extends React.Component {
 
     render() {
         const { reqType } = this.props
-        const { showModal, manufacturer, country, toastMsg, warningMaker, warningCountry } = this.state
+        const { showModal, manufacturer, country, toastMsg, warningMaker, warningCountry, warningMain } = this.state
         let showButton, title, launchButton
         const tooltip = <Tooltip id="tooltip"><strong>Click to {reqType} data</strong></Tooltip>
 
@@ -154,6 +156,7 @@ class AddMaker extends React.Component {
             title = <Modal.Title>Edit Vehicle Maker</Modal.Title>
             launchButton = <Button bsStyle="primary" onClick={this.handleEdit}>Update</Button>
         }
+
         return (
             <div>
                 <OverlayTrigger placement="top" overlay={tooltip}>
@@ -165,13 +168,14 @@ class AddMaker extends React.Component {
                     </Modal.Header>
 
                     <Modal.Body>
+                        <p className="warning">{warningMain}</p>
                         <FormControl.Static>Manufacturer:</FormControl.Static>
                         <FormControl type="text" value={manufacturer} placeholder="Enter Manufacturer's Name" onChange={this.handleMakerName} ></FormControl>
-                        <small>{warningMaker}</small>
+                        <small className="warning">{warningMaker}</small>
 
                         <FormControl.Static>Country of Origin:</FormControl.Static>
                         <FormControl type="text" value={country} placeholder="Enter Country Name" onChange={this.handleCountry} ></FormControl>
-                        <small>{warningCountry}</small>
+                        <small className="warning">{warningCountry}</small>
                     </Modal.Body>
 
                     <Modal.Footer>
@@ -185,4 +189,4 @@ class AddMaker extends React.Component {
     }
 }
 
-export default AddMaker;
+export default ValidateIt(AddMaker)
