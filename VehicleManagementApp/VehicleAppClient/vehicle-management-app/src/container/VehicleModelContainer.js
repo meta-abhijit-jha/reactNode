@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import Index from '../component/Index'
+import { Alert } from 'react-bootstrap'
 
 class VehicleModelContainer extends React.Component {
   constructor(props) {
@@ -13,12 +14,21 @@ class VehicleModelContainer extends React.Component {
       filterType: {},
       filterVariant: {},
       sortBy: '',
-      orderBy: ''
+      orderBy: '',
+      warningMsg: '',
+      showList: true,
     }
 
     this.getData = this.getData.bind(this)
+    this.showAlert = this.showAlert.bind(this)
   }
 
+  showAlert() {
+    const { warningMsg } = this.state
+    if (warningMsg != '') {
+      return <Alert bsStyle="danger">{warningMsg}</Alert>
+    }
+  }
 
   getData(page, searchData, filterType, filterVariant, sortBy, orderBy) {
     let filterString = ''
@@ -37,23 +47,31 @@ class VehicleModelContainer extends React.Component {
           page: page,
           details: res.data.vehicles,
           lastPage: res.data.lastPage,
-          searchData: searchData
+          searchData: searchData,
+          warningMsg: '',
+          showList: true
+        })
+      }, (error) => {
+        this.setState({
+          warningMsg: error.response.data.message,
+          showList: false
         })
       })
   }
 
   componentDidMount() {
-    const {page, searchData, filterType, filterVariant, sortBy, orderBy} = this.state
+    const { page, searchData, filterType, filterVariant, sortBy, orderBy } = this.state
 
     this.getData(page, searchData, filterType, filterVariant, sortBy, orderBy)
   }
 
   render() {
-    const { page, details, lastPage } = this.state
+    const { page, details, lastPage, showList } = this.state
 
     return (
       <div>
-        <Index listItems={details} last={lastPage} page={page} fetchData={this.getData} screen="vehModel">
+        {this.showAlert()}
+        <Index listItems={details} last={lastPage} page={page} fetchData={this.getData} screen="vehModel" showList={showList}>
         </Index>
       </div>
     )

@@ -16,7 +16,7 @@ class VehicleDataComponent extends React.Component {
     }
 
     render() {
-        const { data } = this.props
+        const { data, showList } = this.props
 
         const tableRow = data.map((data) =>
             <tr>
@@ -37,12 +37,18 @@ class VehicleDataComponent extends React.Component {
                         last_repaired_on={data.last_repaired_on}
                         model={data.model}
                         modelTitle={data.VehicleModel.model}
-                        makerTitle={data.VehicleModel.VehicleManufacturer.manufacturer}>
+                        makerTitle="Select Maker">
                     </AddData>
                 </td>
                 <td><Delete id={data.id} screen="vehicleData"></Delete></td>
             </tr>
         )
+
+        if(!showList) {
+            return (
+                <div><h1>Vehicle Data Page</h1></div>
+            )
+        }
 
         return (
             <div>

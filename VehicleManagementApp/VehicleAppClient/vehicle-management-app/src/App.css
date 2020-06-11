@@ -78,3 +78,17 @@ th {
 .warning {
   color: red;
 }
+
+.dropdownCheckbox {
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdown-menu {
+  min-width: 75px;
+  right: 0;
+  left: auto;
+  float: right;
+}

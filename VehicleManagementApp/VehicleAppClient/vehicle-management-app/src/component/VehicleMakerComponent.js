@@ -16,7 +16,7 @@ class VehicleMakerComponent extends React.Component {
     }
 
     render() {
-        const { data } = this.props
+        const { data, showList } = this.props
 
         const tableRow = data.map((data) =>
             <tr>
@@ -33,6 +33,12 @@ class VehicleMakerComponent extends React.Component {
                 <td><Delete id={data.id} screen="vehicleMaker"></Delete></td>
             </tr>
         )
+        
+        if(!showList) {
+            return (
+                <div><h1>Vehicle Maker Page</h1></div>
+            )
+        }
 
         return (
             <div>

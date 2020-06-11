@@ -25,11 +25,13 @@ class YearFilter extends React.Component {
         return (
             <div>
                 <DropdownButton bsStyle="default" title="Year of Purchase">
-                    <Checkbox id="2016" onChange={this.handleCheckbox}>2016</Checkbox>
-                    <Checkbox id="2017" onChange={this.handleCheckbox}>2017</Checkbox>
-                    <Checkbox id="2018" onChange={this.handleCheckbox}>2018</Checkbox>
-                    <Checkbox id="2019" onChange={this.handleCheckbox}>2019</Checkbox>
-                    <Checkbox id="2020" onChange={this.handleCheckbox}>2020</Checkbox>
+                    <div className="dropdownCheckbox">
+                        <Checkbox id="2016" onChange={this.handleCheckbox}>2016</Checkbox>
+                        <Checkbox id="2017" onChange={this.handleCheckbox}>2017</Checkbox>
+                        <Checkbox id="2018" onChange={this.handleCheckbox}>2018</Checkbox>
+                        <Checkbox id="2019" onChange={this.handleCheckbox}>2019</Checkbox>
+                        <Checkbox id="2020" onChange={this.handleCheckbox}>2020</Checkbox>
+                    </div>
                 </DropdownButton>
             </div>
         )

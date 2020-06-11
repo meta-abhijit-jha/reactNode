@@ -51,14 +51,14 @@ class Index extends React.Component {
   }
 
   displayPage() {
-    const { screen, listItems } = this.props
+    const { screen, listItems, showList } = this.props
 
     if (screen === "vehData") {
-      return <VehicleDataComponent data={listItems} handleSort={this.handleSort}></VehicleDataComponent>
+      return <VehicleDataComponent data={listItems} handleSort={this.handleSort} showList={showList}></VehicleDataComponent>
     } else if (screen === "vehModel") {
-      return <VehicleModelComponent data={listItems} handleSort={this.handleSort}></VehicleModelComponent>
+      return <VehicleModelComponent data={listItems} handleSort={this.handleSort} showList={showList}></VehicleModelComponent>
     } else {
-      return <VehicleMakerComponent data={listItems} handleSort={this.handleSort}></VehicleMakerComponent>
+      return <VehicleMakerComponent data={listItems} handleSort={this.handleSort} showList={showList}></VehicleMakerComponent>
     }
   }
 

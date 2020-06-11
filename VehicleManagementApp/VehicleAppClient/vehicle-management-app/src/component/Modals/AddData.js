@@ -72,12 +72,14 @@ class AddData extends React.Component {
     }
 
     submitChecker() {
-        const { vehiclenumber, owner_name, purchased_on, last_repaired_on } = this.state
+        const { vehiclenumber, owner_name, purchased_on, last_repaired_on, modelTitle, makerTitle } = this.state
 
         if ((this.props.checkValid('VIN', 'addData', vehiclenumber) == '')
-            || (this.props.checkValid('owner', 'addData', owner_name) == '')
-            || (this.props.checkValid('purchased', 'addData', purchased_on) == '')
-            || (this.props.checkValid('repaired', 'addData', last_repaired_on) == '')
+            && (this.props.checkValid('owner', 'addData', owner_name) == '')
+            && (this.props.checkValid('purchased', 'addData', purchased_on) == '')
+            && (this.props.checkValid('repaired', 'addData', last_repaired_on) == '')
+            && (modelTitle!='Select Model')
+            && (makerTitle!='Select Maker')
         ) {
             return true
         }
